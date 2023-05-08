@@ -23,7 +23,6 @@ def encode (imgs):
     return encode
 
 encodeKnownAttendance = encode(imgs)
-print('Encoding success')
 
 cap = cv2.VideoCapture(0)
 
@@ -38,18 +37,22 @@ while True:
     encodeCurrentFrame = face_recognition.face_encodings(frame, locationCurrentFrame)
 
     for encodeFace, locationFace in zip(encodeCurrentFrame, locationCurrentFrame):
+        # find if there's a face matching from the database
         match = face_recognition.compare_faces(encodeKnownAttendance, encodeFace)
         distance = face_recognition.face_distance(encodeKnownAttendance, encodeFace)
         matchIndex = np.argmin(distance)
 
+        # if the face in the cam is known then save its name taking it from the file name
         if (match[matchIndex]):
             name = names[matchIndex]
         else:
             name = '???'
 
+        # add a rectangle on every face and put the name above it
         y1, x2, y2, x1 = locationFace
         cv2.rectangle(frame, (x1,y1), (x2, y2), (0,0,255), 1)
         cv2.putText(frame, f'{name}', (x1 + 6, y1 - 6), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,0,255), 1)
 
+    # show the webcam
     cv2.imshow('WebCam', frame)
     cv2.waitKey(1)
