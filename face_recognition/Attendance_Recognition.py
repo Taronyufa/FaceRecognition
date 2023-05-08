@@ -26,14 +26,23 @@ def encode (imgs):
 def markAttendance (name):
     with open('Attendance.csv', 'r+') as f:
         dataList = f.readlines()
+        nameList = []
         for line in dataList:
             entry = line.split(',')
-        if (name not in entry[0]):
+            nameList.append(entry[0])
+        # if the name is not in the list records it
+        if (name not in nameList):
             date = datetime.now()
             time = date.strftime('%H:%M:%S')
-            date = date.today()
+            date = f'{date.year}-{date.month}-{date.day}'
             f.writelines(f'\n{name},{date},{time}')
-    del date, time, f, entry
+        # if the name is in the list, but his attendance is relative to another day records it
+        # elif (entry[1][entry[0].index(name)] != date.today()):
+            # date = datetime.now()
+            # time = date.strftime('%H:%M:%S')
+            # date = f'{date.year}-{date.month}-{date.day}'
+            # f.writelines(f'\n{name},{date},{time}')
+        f.close()
 
 encodeKnownAttendance = encode(imgs)
 
@@ -41,7 +50,7 @@ cap = cv2.VideoCapture(0)
 
 while True:
     # taking the frame from webcam, reshaping it and changing the color from BGR to RGB
-    frame = cap.read()
+    success, frame = cap.read()
     frame = cv2.resize(frame, (0,0), None, 0.25, 0.25)
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
