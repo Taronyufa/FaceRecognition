@@ -36,8 +36,16 @@ def markAttendance (name):
             time = date.strftime('%H:%M:%S')
             date = f'{date.year}-{date.month}-{date.day}'
             f.writelines(f'\n{name},{date},{time}')
+
+        # find the most recent date of the attendance of the name
+        dummy = []
+        for elem in nameList:
+            if name in elem:
+                dummy.append(elem)
+        # trova la data più recente
+
         # if the name is in the list, but his attendance is relative to another day records it
-        # elif (entry[1][entry[0].index(name)] != date.today()):
+        # if (recentdate != date.today()):
             # date = datetime.now()
             # time = date.strftime('%H:%M:%S')
             # date = f'{date.year}-{date.month}-{date.day}'
