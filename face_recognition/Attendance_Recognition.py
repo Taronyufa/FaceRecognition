@@ -36,6 +36,7 @@ def markAttendance (name):
             time = date.strftime('%H:%M:%S')
             date = f'{date.year}-{date.month}-{date.day}'
             f.writelines(f'\n{name},{date},{time}')
+            return
 
         # find the most recent date of the attendance of the name
         dummy = []
