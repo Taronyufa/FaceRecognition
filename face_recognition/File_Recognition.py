@@ -27,7 +27,7 @@ cv2.rectangle(imgTest, (locationTest[3], locationTest[0]), (locationTest[1], loc
 cv2.putText(imgTest, f'{similarities} |  {round(distance[0], 2)}', (50, 50), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,0,255), 1)
 
 # showing the imgs and waiting for a key to be pressed to close it
-# cv2.imshow('Bill', imgBill)
+cv2.imshow('Bill', imgBill)
 cv2.imshow('Test', imgTest)
 
 cv2.waitKey(0)
