@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 import face_recognition
 import os
+from datetime import datetime
 
 # upload every photo in the directory in a list
 path = 'Data'
@@ -22,13 +23,25 @@ def encode (imgs):
         encode.append(face_recognition.face_encodings(elem)[0])
     return encode
 
+def markAttendance (name):
+    with open('Attendance.csv', 'r+') as f:
+        dataList = f.readlines()
+        for line in dataList:
+            entry = line.split(',')
+        if (name not in entry[0]):
+            date = datetime.now()
+            time = date.strftime('%H:%M:%S')
+            date = date.today()
+            f.writelines(f'\n{name},{date},{time}')
+    del date, time, f, entry
+
 encodeKnownAttendance = encode(imgs)
 
 cap = cv2.VideoCapture(0)
 
 while True:
     # taking the frame from webcam, reshaping it and changing the color from BGR to RGB
-    success, frame = cap.read()
+    frame = cap.read()
     frame = cv2.resize(frame, (0,0), None, 0.25, 0.25)
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
@@ -38,13 +51,14 @@ while True:
 
     for encodeFace, locationFace in zip(encodeCurrentFrame, locationCurrentFrame):
         # find if there's a face matching from the database
-        match = face_recognition.compare_faces(encodeKnownAttendance, encodeFace)
+        isMatch = face_recognition.compare_faces(encodeKnownAttendance, encodeFace)
         distance = face_recognition.face_distance(encodeKnownAttendance, encodeFace)
         matchIndex = np.argmin(distance)
 
         # if the face in the cam is known then save its name taking it from the file name
-        if (match[matchIndex]):
+        if (isMatch[matchIndex]):
             name = names[matchIndex]
+            markAttendance(name)
         else:
             name = '???'
 
