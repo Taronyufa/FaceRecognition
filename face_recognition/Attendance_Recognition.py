@@ -3,6 +3,7 @@ import cv2
 import face_recognition
 import os
 from datetime import datetime
+from pathlib import Path
 
 # encode every photo of the list
 def encode (imgs):
@@ -22,7 +23,7 @@ def markAttendance (name):
     day = date.day if (date.day > 9) else f'0{date.day}'
     date = f'{date.year}-{month}-{day}'
 
-    with open('Attendance.csv', 'r+') as f:
+    with open(Path('Attendance.csv'), 'r+') as f:
         dataList = f.readlines()
 
         # list of all names in the csv file
@@ -37,7 +38,7 @@ def markAttendance (name):
             f.close()
             return
 
-    with open('Attendance.csv', 'r+') as f:
+    with open(Path('Attendance.csv'), 'r+') as f:
         dataList = f.readlines()
 
         # find the most recent date of the attendance of the name
@@ -55,7 +56,7 @@ def markAttendance (name):
             return
 
 # upload every photo in the directory in a list
-path = 'Data'
+path = Path('Data')
 imgs = [] # cambiare con un dizionario
 names = []
 list = os.listdir(path)
