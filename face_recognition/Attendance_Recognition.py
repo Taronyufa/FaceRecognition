@@ -5,7 +5,7 @@ import os
 from datetime import datetime
 
 # upload every photo in the directory in a list
-path = './face_recognition/Data'
+path = 'Data'
 imgs = [] # cambialo con un dizionario
 names = []
 list = os.listdir(path)
@@ -23,34 +23,44 @@ def encode (imgs):
         encode.append(face_recognition.face_encodings(elem)[0])
     return encode
 
+# mark the attendance in a csv file
 def markAttendance (name):
-    with open('./face_recognition/Attendance.csv', 'r+') as f:
+    with open('Attendance.csv', 'r+') as f:
         dataList = f.readlines()
+
+        # taking day and time of input and formatting day
+        date = datetime.now()
+        time = date.strftime('%H:%M:%S')
+        month = date.month if (date.month > 9) else f'0{date.month}'
+        day = date.day if (date.day > 9) else f'0{date.day}'
+        date = f'{date.year}-{month}-{day}'
+
+        # list of all names in the csv file
         nameList = []
         for line in dataList:
             entry = line.split(',')
             nameList.append(entry[0])
+
         # if the name is not in the list records it
         if (name not in nameList):
-            date = datetime.now()
-            time = date.strftime('%H:%M:%S')
-            date = f'{date.year}-{date.month}-{date.day}'
             f.writelines(f'\n{name},{date},{time}')
             return
+        f.close()
+
+    with open('Attendance.csv', 'r+') as f:
+        dataList = f.readlines()
 
         # find the most recent date of the attendance of the name
         dummy = []
-        for elem in nameList:
-            if name in elem:
-                dummy.append(elem)
-        # trova la data più recente
+        for line in dataList:
+            entry = line.split(',')
+            if name in entry:
+                dummy.append(entry[1])
+        recentdate = max(dummy)
 
         # if the name is in the list, but his attendance is relative to another day records it
-        # if (recentdate != date.today()):
-            # date = datetime.now()
-            # time = date.strftime('%H:%M:%S')
-            # date = f'{date.year}-{date.month}-{date.day}'
-            # f.writelines(f'\n{name},{date},{time}')
+        if (recentdate != date):
+            f.writelines(f'\n{name},{date},{time}')
         f.close()
 
 encodeKnownAttendance = encode(imgs)
@@ -61,7 +71,6 @@ while True:
     # taking the frame from webcam, reshaping it and changing the color from BGR to RGB
     success, frame = cap.read()
     frame = cv2.resize(frame, (0,0), None, 0.25, 0.25)
-    # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) COMMENTANDO STA RIGA SI RISOLVE IL PROBLEMA DEI COLORI
 
     # locate and encode the faces from the current frame
     locationCurrentFrame = face_recognition.face_locations(frame)
