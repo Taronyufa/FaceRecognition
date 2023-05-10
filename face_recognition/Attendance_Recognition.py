@@ -4,17 +4,6 @@ import face_recognition
 import os
 from datetime import datetime
 
-# upload every photo in the directory in a list
-path = 'Data'
-imgs = [] # cambialo con un dizionario
-names = []
-list = os.listdir(path)
-for elem in list:
-    curimg = cv2.imread(f'{path}/{elem}')
-    imgs.append(curimg)
-    names.append(os.path.splitext(elem)[0])
-del curimg, path, list
-
 # encode every photo of the list
 def encode (imgs):
     encode = []
@@ -25,15 +14,16 @@ def encode (imgs):
 
 # mark the attendance in a csv file
 def markAttendance (name):
+
+    # taking day and time of input and formatting day
+    date = datetime.now()
+    time = date.strftime('%H:%M:%S')
+    month = date.month if (date.month > 9) else f'0{date.month}'
+    day = date.day if (date.day > 9) else f'0{date.day}'
+    date = f'{date.year}-{month}-{day}'
+
     with open('Attendance.csv', 'r+') as f:
         dataList = f.readlines()
-
-        # taking day and time of input and formatting day
-        date = datetime.now()
-        time = date.strftime('%H:%M:%S')
-        month = date.month if (date.month > 9) else f'0{date.month}'
-        day = date.day if (date.day > 9) else f'0{date.day}'
-        date = f'{date.year}-{month}-{day}'
 
         # list of all names in the csv file
         nameList = []
@@ -44,8 +34,8 @@ def markAttendance (name):
         # if the name is not in the list records it
         if (name not in nameList):
             f.writelines(f'\n{name},{date},{time}')
+            f.close()
             return
-        f.close()
 
     with open('Attendance.csv', 'r+') as f:
         dataList = f.readlines()
@@ -61,7 +51,19 @@ def markAttendance (name):
         # if the name is in the list, but his attendance is relative to another day records it
         if (recentdate != date):
             f.writelines(f'\n{name},{date},{time}')
-        f.close()
+            f.close()
+            return
+
+# upload every photo in the directory in a list
+path = 'Data'
+imgs = [] # cambiare con un dizionario
+names = []
+list = os.listdir(path)
+for elem in list:
+    curimg = cv2.imread(f'{path}/{elem}')
+    imgs.append(curimg)
+    names.append(os.path.splitext(elem)[0])
+del curimg, path, list
 
 encodeKnownAttendance = encode(imgs)
 

@@ -23,7 +23,7 @@ button_frame.pack(fill=BOTH, expand=True)
 start_capture_button = Button(button_frame, text="Start capture", font=("Consolas", 15), command=createCamera)
 start_capture_button.pack()
 
-end_capture_button = Button(button_frame, text="End capture", font=("Consolas", 15))
+end_capture_button = Button(button_frame, text="Take capture", font=("Consolas", 15))
 end_capture_button.pack()
 
 root.mainloop()
