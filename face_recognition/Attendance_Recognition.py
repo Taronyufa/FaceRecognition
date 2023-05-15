@@ -22,7 +22,7 @@ def markAttendance (name):
     day = date.day if (date.day > 9) else f'0{date.day}'
     date = f'{date.year}-{month}-{day}'
 
-    with open('Attendance.csv', 'r+') as f:
+    with open(os.path.join(os.getcwd(), 'Attendance.csv'), 'r+') as f:
         dataList = f.readlines()
 
         # list of all names in the csv file
@@ -37,7 +37,7 @@ def markAttendance (name):
             f.close()
             return
 
-    with open('Attendance.csv', 'r+') as f:
+    with open(os.path.join(os.getcwd(), 'Attendance.csv'), 'r+') as f:
         dataList = f.readlines()
 
         # find the most recent date of the attendance of the name
@@ -55,7 +55,7 @@ def markAttendance (name):
             return
 
 # upload every photo in the directory in a list
-path = 'Data'
+path = os.path.join(os.getcwd(), 'Data')
 imgs = [] # cambiare con un dizionario
 names = []
 list = os.listdir(path)
@@ -93,6 +93,7 @@ while True:
 
         # add a rectangle on every face and put the name above it
         y1, x2, y2, x1 = locationFace
+
         cv2.rectangle(frame, (x1,y1), (x2, y2), (0,0,255), 1)
         cv2.putText(frame, f'{name}', (x1 + 6, y1 - 6), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,0,255), 1)
 

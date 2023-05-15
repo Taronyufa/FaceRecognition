@@ -2,9 +2,11 @@ import numpy
 import cv2
 import face_recognition
 
-# Taking the files
+# Taking the files and changing color scheme from bgr to rgb
 imgBill = face_recognition.load_image_file('Data/Bill Gates.jpg')
+imgBill = cv2.cvtColor(imgBill, cv2.COLOR_BGR2RGB)
 imgTest = face_recognition.load_image_file('Data/Gates Test.jpg')
+imgTest = cv2.cvtColor(imgTest, cv2.COLOR_BGR2RGB)
 
 # finding the location of the face
 faceLocation = face_recognition.face_locations(imgBill)[0]
