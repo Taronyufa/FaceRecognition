@@ -9,6 +9,7 @@ def send():
     path = os.path.join(os.getcwd(), 'Data')
     fileName = f'{entry.get()}.jpg'
     cv2.imwrite(os.path.join(path, fileName), img)
+    root.destroy()
 
 def takeCapture():
     # cleans the current window
