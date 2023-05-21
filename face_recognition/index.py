@@ -66,7 +66,7 @@ if __name__ == '__main__':
     root.geometry("800x620")
     root.title('Face Recognition')
     frame = tk.Frame(root)
-    frame.pack(side="top", expand=True, fill="both")
+    frame.pack()
 
     # takes the camera input and sizes it appropriately
     cap = cv2.VideoCapture(0)

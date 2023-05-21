@@ -12,6 +12,15 @@ def encode (imgs):
         encode.append(face_recognition.face_encodings(elem)[0])
     return encode
 
+# saves in a directory the unrecognized people
+def recUnrecognizedPeople ():
+    cap = cv2.VideoCapture(0)
+    result, img = cap.read()
+    path = os.path.join(os.getcwd(), 'Unrecognized people')
+    list = os.listdir(path)
+    fileName = f'Unrecognized N.{len(list) + 1}.jpg'
+    cv2.imwrite(os.path.join(path, fileName), img)
+
 # mark the attendance in a csv file
 def markAttendance (name):
 
@@ -90,6 +99,7 @@ while True:
             markAttendance(name)
         else:
             name = '???'
+            recUnrecognizedPeople()
 
         # add a rectangle on every face and put the name above it
         y1, x2, y2, x1 = locationFace
