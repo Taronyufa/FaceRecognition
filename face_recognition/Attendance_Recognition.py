@@ -24,14 +24,28 @@ def encode (imgs):
     return encode
 
 # saves in a directory the unrecognized people
-def recUnrecognizedPeople (img):
+def recUnrecognizedPeople (img, encodeUknown):
     path = os.path.join(os.getcwd(), 'Unrecognized people')
     list = os.listdir(path)
-    fileName = f'Unrecognized N.{len(list) + 1}.jpg'
-    cv2.imwrite(os.path.join(path, fileName), img)
+    name = f'Unrecognized N.{len(list) + 1}'
+
+    locationFrame = face_recognition.face_locations(img)
+    encodeFrame = face_recognition.face_encodings(img, locationFrame)
+
+    for encodeFace, locationFace in zip(encodeFrame, locationFrame):
+        # find if there's a face matching from the database
+        isMatch = face_recognition.compare_faces(encodeUknown, encodeFace)
+        distance = face_recognition.face_distance(encodeUknown, encodeFace)
+        matchIndex = np.argmin(distance)
+
+        if (not isMatch[matchIndex]):
+            fileName = f'{name}.jpg'
+            markAttendance(name, 'Unrecognized people')
+            cv2.imwrite(os.path.join(path, fileName), img)
+
 
 # mark the attendance in a csv file
-def markAttendance (name):
+def markAttendance (name, fileName):
 
     # taking day and time of input and formatting day
     date = datetime.now()
@@ -40,7 +54,7 @@ def markAttendance (name):
     day = date.day if (date.day > 9) else f'0{date.day}'
     date = f'{date.year}-{month}-{day}'
 
-    with open(os.path.join(os.getcwd(), 'Attendance.csv'), 'r+') as f:
+    with open(os.path.join(os.getcwd(), fileName), 'r+') as f:
         dataList = f.readlines()
 
         # list of all names in the csv file
@@ -55,7 +69,7 @@ def markAttendance (name):
             f.close()
             return
 
-    with open(os.path.join(os.getcwd(), 'Attendance.csv'), 'r+') as f:
+    with open(os.path.join(os.getcwd(), fileName), 'r+') as f:
         dataList = f.readlines()
 
         # find the most recent date of the attendance of the name
@@ -78,6 +92,11 @@ imgs, names = getImgsNames(path)
 
 encodeKnownAttendance = encode(imgs)
 
+path = os.path.join(os.getcwd(), 'Unrecognized people')
+UknownImgs, UknownNames = getImgsNames(path)
+
+encodeUknown = encode(imgs)
+
 cap = cv2.VideoCapture(0)
 
 while True:
@@ -98,10 +117,10 @@ while True:
         # if the face in the cam is known then save its name taking it from the file name
         if (isMatch[matchIndex]):
             name = names[matchIndex]
-            markAttendance(name)
+            markAttendance(name, 'Attendance.csv')
         else:
             name = '???'
-            recUnrecognizedPeople(frame)
+            recUnrecognizedPeople(frame, encodeUknown)
 
         # add a rectangle on every face and put the name above it
         y1, x2, y2, x1 = locationFace
