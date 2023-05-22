@@ -13,9 +13,7 @@ def encode (imgs):
     return encode
 
 # saves in a directory the unrecognized people
-def recUnrecognizedPeople ():
-    cap = cv2.VideoCapture(0)
-    result, img = cap.read()
+def recUnrecognizedPeople (img):
     path = os.path.join(os.getcwd(), 'Unrecognized people')
     list = os.listdir(path)
     fileName = f'Unrecognized N.{len(list) + 1}.jpg'
@@ -99,7 +97,7 @@ while True:
             markAttendance(name)
         else:
             name = '???'
-            recUnrecognizedPeople()
+            recUnrecognizedPeople(frame)
 
         # add a rectangle on every face and put the name above it
         y1, x2, y2, x1 = locationFace
