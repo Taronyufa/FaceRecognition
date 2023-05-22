@@ -40,7 +40,7 @@ def recUnrecognizedPeople (img, encodeUknown):
 
         if (not isMatch[matchIndex]):
             fileName = f'{name}.jpg'
-            markAttendance(name, 'Unrecognized people')
+            markAttendance(name, 'Unrecognized.csv')
             cv2.imwrite(os.path.join(path, fileName), img)
 
 
