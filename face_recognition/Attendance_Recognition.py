@@ -4,6 +4,17 @@ import face_recognition
 import os
 from datetime import datetime
 
+def getImgsNames(path):
+    imgs = [] # cambiare con un dizionario
+    names = []
+    list = os.listdir(path)
+    for elem in list:
+        curimg = cv2.imread(f'{path}/{elem}')
+        imgs.append(curimg)
+        names.append(os.path.splitext(elem)[0])
+    del curimg, list
+    return imgs, names
+
 # encode every photo of the list
 def encode (imgs):
     encode = []
@@ -63,14 +74,7 @@ def markAttendance (name):
 
 # upload every photo in the directory in a list
 path = os.path.join(os.getcwd(), 'Data')
-imgs = [] # cambiare con un dizionario
-names = []
-list = os.listdir(path)
-for elem in list:
-    curimg = cv2.imread(f'{path}/{elem}')
-    imgs.append(curimg)
-    names.append(os.path.splitext(elem)[0])
-del curimg, path, list
+imgs, names = getImgsNames(path)
 
 encodeKnownAttendance = encode(imgs)
 
