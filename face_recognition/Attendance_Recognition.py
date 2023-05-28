@@ -5,7 +5,7 @@ import os
 from datetime import datetime
 
 def getImgsNames(path):
-    imgs = [] # cambiare con un dizionario
+    imgs = [] 
     names = []
     list = os.listdir(path)
     for elem in list:
@@ -24,7 +24,7 @@ def encode (imgs):
     return encode
 
 # saves in a directory the unrecognized people
-def recUnrecognizedPeople (img, encodeUknown):
+def recUnrecognizedPeople (img, encodeUknown, namesUknown):
     path = os.path.join(os.getcwd(), 'Unrecognized people')
     list = os.listdir(path)
     name = f'Unrecognized N.{len(list) + 1}'
@@ -42,6 +42,8 @@ def recUnrecognizedPeople (img, encodeUknown):
             fileName = f'{name}.jpg'
             markAttendance(name, 'Unrecognized.csv')
             cv2.imwrite(os.path.join(path, fileName), img)
+        else:
+            markAttendance(namesUknown[matchIndex], 'Unrecognized.csv')
 
 
 # mark the attendance in a csv file
@@ -95,7 +97,7 @@ encodeKnownAttendance = encode(imgs)
 path = os.path.join(os.getcwd(), 'Unrecognized people')
 UknownImgs, UknownNames = getImgsNames(path)
 
-encodeUknown = encode(imgs)
+encodeUknown = encode(UknownImgs)
 
 cap = cv2.VideoCapture(0)
 
@@ -120,7 +122,7 @@ while True:
             markAttendance(name, 'Attendance.csv')
         else:
             name = '???'
-            recUnrecognizedPeople(frame, encodeUknown)
+            recUnrecognizedPeople(frame, encodeUknown, UknownNames)
 
         # add a rectangle on every face and put the name above it
         y1, x2, y2, x1 = locationFace
